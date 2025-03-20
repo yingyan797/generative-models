@@ -6,7 +6,7 @@ DEVICE = torch.device("cuda")
 def get_all_images_names():
     main_path = dotenv.get_key(".env", "main_path")
     images = []
-    ftypes = ["png", "jpg", "jpeg", "pjpeg", "webp"]
+    ftypes = ["png", "jpg", "jpeg", "webp"]
     def read_images(base_dn):
         for imname in os.listdir(base_dn):
             dn = base_dn+"/"+imname
