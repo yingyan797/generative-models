@@ -9,14 +9,5 @@ def create_wave(loudness, freq, dur):
     data = amplitude * np.sin(2. * np.pi * freq * t)
     return data
 
-sound = None
-freq = 220
-while freq < 880:
-    data = create_wave(0.1, freq, 0.2) + create_wave(0.1, freq*1.5, 0.2)
-    if sound is None:
-        sound = data
-    else:
-        sound = np.concatenate((sound, data), axis=0)    
-    freq *= np.power(2, 1/6)
-
-write("sine.wav", SAMPLERATE, sound.astype(np.int16))
+sound = create_wave(0.2, 440, 1)
+write("static/sine.wav", SAMPLERATE, sound.astype(np.int16))

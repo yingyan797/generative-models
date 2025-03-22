@@ -1,0 +1,79 @@
+<head>
+    <title>Custom waveform</title>
+    <style>
+        table {
+            background-color: azure;
+        }
+        .clickable {
+            border: dashed;
+            margin: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h2>Create custom waveform by pixel | <a href="/">Refresh</a></h2> <form action="/" method="post">
+
+    <table id="wavpix_tab"></table>
+    <br> <b class="clickable" onclick="clear_table()">Reset</b> Target frequency: 
+    <input type="number" name="tfreq" value="440"> Hz <input type="hidden" id="wave" name="wave" value="">
+    <button type="submit" onclick="checkout_table()">create voice</button>
+    </form>
+    
+<script>
+    let tab_nr = 23; let tab_nc = 50;
+    function create_table(tab_nr, tab_nc) {
+        let tab_html = "";
+        for (let r=0; r < tab_nr; r++) {
+            tab_html += "<tr";
+            if (r*2+1 == tab_nr) {
+                tab_html += " style='background-color: skyblue;'"
+            }
+            tab_html += ">"
+            for (let c=0; c < tab_nc; c++) {
+                tab_html += "<td> <input type='checkbox' id='pix_"+r+","+c+"'> </td>";
+            }
+            tab_html += "</tr>";
+        }
+        document.getElementById("wavpix_tab").innerHTML = tab_html;
+    }
+
+    function clear_table() {
+        document.querySelectorAll("[id^=pix_]").forEach(
+            (elem, i) => {elem.checked = false}
+        )
+    }
+
+    function checkout_table() {
+        let nums = ""; let prev_c = -1; let prev_r = 0;
+        let amp = (tab_nr-1)/2;
+        for (let c=0; c < tab_nc; c++) {
+            let row = -1;
+            for (let r=0; r < tab_nr; r++) {
+                if (document.getElementById("pix_"+r+","+c).checked) {
+                    row = r;
+                    break;
+                }
+            }
+            if (row >= 0) {
+                let its = (amp-row)/amp;
+                if (prev_c == c-1) {
+                    nums += its+","
+                } else {
+                    let di = (its - prev_r)/(c - prev_c);
+                    let its_itp = prev_r;
+                    for (let c_itp=prev_c+1; c_itp <= c; c_itp++) {
+                        its_itp += di;
+                        nums += its_itp+","
+                    }
+                }
+                prev_c = c;
+                prev_r = its;
+            }
+        }
+        document.getElementById("wave").value = nums;
+    }
+
+    create_table(tab_nr, tab_nc);
+</script>
+</body>
